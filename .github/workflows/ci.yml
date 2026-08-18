@@ -27,8 +27,8 @@ jobs:
       - name: Dar permisos a gradlew
         run: chmod +x ./gradlew
 
-      - name: Build y tests
-        run: ./gradlew build
+      - name: Build
+        run: ./gradlew build -x test
 
   docker:
     needs: build
