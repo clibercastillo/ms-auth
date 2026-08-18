@@ -41,15 +41,18 @@ public class AuthService {
 
         userRepository.save(user);
     }
-
+    
     public AuthResponse login(LoginRequest request) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
         String token = jwtUtil.generateToken(userDetails);
 
-        return new AuthResponse(token, userDetails.getUsername());
+        return new AuthResponse(token, user.getUsername(), user.getEmail());
     }
 }

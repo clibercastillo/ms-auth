@@ -14,19 +14,20 @@ import java.util.stream.Collectors;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
+	
+	@Override
+	public UserDetails loadUserByUsername(String email) {
+		User user = userRepository.findByEmail(email)
+				.orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + email));
 
-    @Override
-    public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
-
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .authorities(user.getRoles().stream()
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList()))
-                .disabled(!user.isEnabled())
-                .build();
-    }
+		return org.springframework.security.core.userdetails.User.builder()
+				.username(user.getEmail())  // <- usa email como "username" interno
+				.password(user.getPassword())
+				.authorities(user.getRoles().stream()
+						.map(SimpleGrantedAuthority::new)
+						.collect(Collectors.toList()))
+				.disabled(!user.isEnabled())
+				.build();
+	}
+    
 }
