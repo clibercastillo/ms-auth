@@ -27,21 +27,21 @@ services:
     networks:
       - utp-net
 
-  ms-auth:
-    image: ghcr.io/clibercastillo/ms-auth:latest
-    container_name: ms-auth
-    restart: unless-stopped
-    depends_on:
-      - postgres
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ms_auth_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres_pass
-      JWT_SECRET: QWS1yx/jGRhBUyRSbJ8jXixSbUANbw60VE17GSuzNaM=
-    ports:
-      - "8081:8080"
-    networks:
-      - utp-net
+  # ms-auth:
+  #   image: ghcr.io/clibercastillo/ms-auth:latest
+  #   container_name: ms-auth
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - postgres
+  #   environment:
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ms_auth_db
+  #     SPRING_DATASOURCE_USERNAME: postgres
+  #     SPRING_DATASOURCE_PASSWORD: postgres_pass
+  #     JWT_SECRET: QWS1yx/jGRhBUyRSbJ8jXixSbUANbw60VE17GSuzNaM=
+  #   ports:
+  #     - "8081:8080"
+  #   networks:
+  #     - utp-net
 
   ms-stadium:
     image: ghcr.io/clibercastillo/ms-stadium:82b8b64
