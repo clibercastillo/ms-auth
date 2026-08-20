@@ -12,5 +12,16 @@ services:
     volumes:
       - ms_auth_pgdata:/var/lib/postgresql/data
 
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    container_name: ms-bookings-rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"    # protocolo AMQP (lo usan las apps)
+      - "15672:15672"  # panel web de administración
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
 volumes:
   ms_auth_pgdata:
