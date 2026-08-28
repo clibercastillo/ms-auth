@@ -26,7 +26,23 @@ services:
       RABBITMQ_DEFAULT_PASS: guest
     networks:
       - utp-net
-
+      
+  nginx-gateway:
+    image: nginx:alpine
+    container_name: ms-gateway
+    restart: unless-stopped
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - ms-auth
+      - ms-stadium
+      - ms-bookings
+      - ms-notifications
+    networks:
+      - utp-net
+      
   ms-auth:
     image: ghcr.io/clibercastillo/ms-auth:latest
     container_name: ms-auth
@@ -38,8 +54,6 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres_pass
       JWT_SECRET: QWS1yx/jGRhBUyRSbJ8jXixSbUANbw60VE17GSuzNaM=
-    ports:
-      - "8081:8080"
     networks:
       - utp-net
 
@@ -54,8 +68,6 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres_pass
       JWT_SECRET: QWS1yx/jGRhBUyRSbJ8jXixSbUANbw60VE17GSuzNaM=
-    ports:
-      - "8082:8080"
     networks:
       - utp-net
 
@@ -77,8 +89,6 @@ services:
       SPRING_RABBITMQ_PASSWORD: guest
       JWT_SECRET: QWS1yx/jGRhBUyRSbJ8jXixSbUANbw60VE17GSuzNaM=
       SERVICES_STADIUM_URL: http://ms-stadium:8080
-    ports:
-      - "8083:8080"
     networks:
       - utp-net
 
@@ -98,8 +108,6 @@ services:
       SPRING_RABBITMQ_USERNAME: guest
       SPRING_RABBITMQ_PASSWORD: guest
       JWT_SECRET: QWS1yx/jGRhBUyRSbJ8jXixSbUANbw60VE17GSuzNaM=
-    ports:
-      - "8084:8080"
     networks:
       - utp-net
 
