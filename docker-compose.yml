@@ -27,99 +27,99 @@ services:
     networks:
       - utp-net
 
-  nginx:
-    image: nginx:alpine
-    container_name: ms-nginx
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - /etc/letsencrypt:/etc/letsencrypt:ro
-    depends_on:
-      - ms-auth
-      - ms-stadium
-      - ms-bookings
-      - ms-notifications
-    networks:
-      - utp-net
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: ms-nginx
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/conf.d/default.conf
+  #     - /etc/letsencrypt:/etc/letsencrypt:ro
+  #   depends_on:
+  #     - ms-auth
+  #     - ms-stadium
+  #     - ms-bookings
+  #     - ms-notifications
+  #   networks:
+  #     - utp-net
 
-  ms-auth:
-    image: ghcr.io/clibercastillo/ms-auth:latest
-    container_name: ms-auth
-    restart: unless-stopped
-    depends_on:
-      - postgres
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ms_auth_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres_pass
-      JWT_SECRET: QWS1yx/jGRhBUyRSbJ8jXixSbUANbw60VE17GSuzNaM=
-    ports:
-      - "8081:8080"
-    networks:
-      - utp-net
+  # ms-auth:
+  #   image: ghcr.io/clibercastillo/ms-auth:latest
+  #   container_name: ms-auth
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - postgres
+  #   environment:
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ms_auth_db
+  #     SPRING_DATASOURCE_USERNAME: postgres
+  #     SPRING_DATASOURCE_PASSWORD: postgres_pass
+  #     JWT_SECRET: QWS1yx/jGRhBUyRSbJ8jXixSbUANbw60VE17GSuzNaM=
+  #   ports:
+  #     - "8081:8080"
+  #   networks:
+  #     - utp-net
 
-  ms-stadium:
-    image: ghcr.io/clibercastillo/ms-stadium:latest
-    container_name: ms-stadium
-    restart: unless-stopped
-    depends_on:
-      - postgres
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ms_stadium_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres_pass
-      JWT_SECRET: QWS1yx/jGRhBUyRSbJ8jXixSbUANbw60VE17GSuzNaM=
-    ports:
-      - "8082:8080"
-    networks:
-      - utp-net
+  # ms-stadium:
+  #   image: ghcr.io/clibercastillo/ms-stadium:latest
+  #   container_name: ms-stadium
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - postgres
+  #   environment:
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ms_stadium_db
+  #     SPRING_DATASOURCE_USERNAME: postgres
+  #     SPRING_DATASOURCE_PASSWORD: postgres_pass
+  #     JWT_SECRET: QWS1yx/jGRhBUyRSbJ8jXixSbUANbw60VE17GSuzNaM=
+  #   ports:
+  #     - "8082:8080"
+  #   networks:
+  #     - utp-net
 
-  ms-bookings:
-    image: ghcr.io/clibercastillo/ms-bookings:latest
-    container_name: ms-bookings
-    restart: unless-stopped
-    depends_on:
-      - postgres
-      - rabbitmq
-      - ms-stadium
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ms_bookings_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres_pass
-      SPRING_RABBITMQ_HOST: rabbitmq
-      SPRING_RABBITMQ_PORT: 5672
-      SPRING_RABBITMQ_USERNAME: guest
-      SPRING_RABBITMQ_PASSWORD: guest
-      JWT_SECRET: QWS1yx/jGRhBUyRSbJ8jXixSbUANbw60VE17GSuzNaM=
-      SERVICES_STADIUM_URL: http://ms-stadium:8080
-    ports:
-      - "8083:8080"
-    networks:
-      - utp-net
+  # ms-bookings:
+  #   image: ghcr.io/clibercastillo/ms-bookings:latest
+  #   container_name: ms-bookings
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - postgres
+  #     - rabbitmq
+  #     - ms-stadium
+  #   environment:
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ms_bookings_db
+  #     SPRING_DATASOURCE_USERNAME: postgres
+  #     SPRING_DATASOURCE_PASSWORD: postgres_pass
+  #     SPRING_RABBITMQ_HOST: rabbitmq
+  #     SPRING_RABBITMQ_PORT: 5672
+  #     SPRING_RABBITMQ_USERNAME: guest
+  #     SPRING_RABBITMQ_PASSWORD: guest
+  #     JWT_SECRET: QWS1yx/jGRhBUyRSbJ8jXixSbUANbw60VE17GSuzNaM=
+  #     SERVICES_STADIUM_URL: http://ms-stadium:8080
+  #   ports:
+  #     - "8083:8080"
+  #   networks:
+  #     - utp-net
 
-  ms-notifications:
-    image: ghcr.io/clibercastillo/ms-notifications:latest
-    container_name: ms-notifications
-    restart: unless-stopped
-    depends_on:
-      - postgres
-      - rabbitmq
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ms_notifications_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres_pass
-      SPRING_RABBITMQ_HOST: rabbitmq
-      SPRING_RABBITMQ_PORT: 5672
-      SPRING_RABBITMQ_USERNAME: guest
-      SPRING_RABBITMQ_PASSWORD: guest
-      JWT_SECRET: QWS1yx/jGRhBUyRSbJ8jXixSbUANbw60VE17GSuzNaM=
-    ports:
-      - "8084:8080"
-    networks:
-      - utp-net
+  # ms-notifications:
+  #   image: ghcr.io/clibercastillo/ms-notifications:latest
+  #   container_name: ms-notifications
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - postgres
+  #     - rabbitmq
+  #   environment:
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ms_notifications_db
+  #     SPRING_DATASOURCE_USERNAME: postgres
+  #     SPRING_DATASOURCE_PASSWORD: postgres_pass
+  #     SPRING_RABBITMQ_HOST: rabbitmq
+  #     SPRING_RABBITMQ_PORT: 5672
+  #     SPRING_RABBITMQ_USERNAME: guest
+  #     SPRING_RABBITMQ_PASSWORD: guest
+  #     JWT_SECRET: QWS1yx/jGRhBUyRSbJ8jXixSbUANbw60VE17GSuzNaM=
+  #   ports:
+  #     - "8084:8080"
+  #   networks:
+  #     - utp-net
 
 volumes:
   pgdata:
